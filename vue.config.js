@@ -10,15 +10,15 @@ module.exports = {
         views: '@/views'
       }
     }
-  },
-  // 代理处理跨域
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://123.207.32.32:8000',
-        ws: true, // 对websocket也代理
-        changeOrigin: true
-      }
-    }
   }
+  // 代理处理跨域
+  // devServer: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://123.207.32.32:8000',
+  //       ws: true, // 对websocket也代理
+  //       changeOrigin: true
+  //     }
+  //   }
+  // }
 }
