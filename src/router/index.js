@@ -8,6 +8,7 @@ const Home = () => import('views/home/Home.vue')
 const Category = () => import('views/category/Category.vue')
 const ShopCar = () => import('views/shopcar/ShopCar.vue')
 const Profile = () => import('views/profile/Profile.vue')
+const Detail = () => import('views/detail/Detail.vue')
 // 3.创建路由配置对象
 const routes = [
   {
@@ -29,6 +30,10 @@ const routes = [
   {
     path: '/profile',
     component: Profile
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail
   }
 ]
 // 4.实例化路由对象

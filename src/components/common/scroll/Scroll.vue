@@ -35,7 +35,11 @@ export default {
       this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp()
     },
     refresh () {
-      this.scroll.refresh()
+      this.scroll && this.scroll.refresh()
+    },
+    // 获取原来滚动位置
+    getScrollY () {
+      return this.scroll ? this.scroll.y : 0
     }
   },
   mounted () {
@@ -46,10 +50,11 @@ export default {
       pullUpLoad: this.pullUpLoad
     })
     // 监听滚动位置
-    this.scroll.on('scroll', (position) => {
-      this.$emit('scroll', position)
-    })
-    this.scroll.refresh()
+    if (this.probeType === 2 || this.probeType === 3) {
+      this.scroll.on('scroll', (position) => {
+        this.$emit('scroll', position)
+      })
+    }
     // 监听上拉事件
     if (this.pullUpLoad) {
       this.scroll.on('pullingUp', () => {
