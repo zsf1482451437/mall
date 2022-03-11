@@ -61,7 +61,7 @@ export default {
   data () {
     return {
       // 记录跳转过来的参数
-      iid: null,
+      iid: '',
       // 轮播图片
       topImages: [],
       // 商品信息
@@ -86,29 +86,10 @@ export default {
   created () {
     // 1.保存传入的iid
     this.iid = this.$route.params.iid
-
     // 2.根据iid发送请求
-    getDetailData(this.iid).then((res) => {
-      // 1.获取顶部轮播图片
-      const data = res.result
-      this.topImages = data.itemInfo.topImages
-      // 2.获取商品基础信息
-      this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
-      // 3.获取商品店铺信息
-      this.shop = new Shop(data.shopInfo)
-      // 4.保存商品的详情数据
-      this.detailInfo = data.detailInfo
-      // 5.获取参数信息
-      this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
-      // 6.获取评论信息
-      if (data.rate.cRate !== 0) {
-        this.commentInfo = data.rate.list[0]
-      }
-    })
+    this.getDetailData()
     // 3.请求推荐数据
-    getRecommend().then((res) => {
-      this.recommends = res.data.list
-    })
+    this.getRecommend()
     // 4.给getTitleTopY赋值(进行防抖)
     this.getTitleTopY = debounce(() => {
       this.titleTopY = []
@@ -119,13 +100,37 @@ export default {
       this.titleTopY.push(Number.MAX_VALUE)
     })
   },
-  mounted () {
-  },
   destroyed () {
     // 取消全局事件的监听
     this.$bus.$off('itemImgLoad', this.itemImgListener)
   },
   methods: {
+    // 请求相关
+    getDetailData () {
+      getDetailData(this.iid).then((res) => {
+      // 1.获取顶部轮播图片
+        const data = res.result
+        this.topImages = data.itemInfo.topImages
+        // 2.获取商品基础信息
+        this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
+        // 3.获取商品店铺信息
+        this.shop = new Shop(data.shopInfo)
+        // 4.保存商品的详情数据
+        this.detailInfo = data.detailInfo
+        // 5.获取参数信息
+        this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+        // 6.获取评论信息
+        if (data.rate.cRate !== 0) {
+          this.commentInfo = data.rate.list[0]
+        }
+      })
+    },
+    getRecommend () {
+      getRecommend().then((res) => {
+        this.recommends = res.data.list
+      })
+    },
+    // 非请求
     // 映射vuex里的actions中的方法
     ...mapActions(['addCart']),
     // 监听图片加载完成
@@ -197,10 +202,5 @@ export default {
   position: relative;
   z-index: 9;
   background-color: #fff;
-}
-.bottom-bar {
-  position: relative;
-  z-index: 9;
-  bottom: -475px;
 }
 </style>

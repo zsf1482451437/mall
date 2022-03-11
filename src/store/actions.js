@@ -17,7 +17,7 @@ export default {
         payload.count = 1
         // 提交插入元素
         context.commit(ADD_TO_CART, payload)
-        resolve('商品+1')
+        resolve('加入购物车成功√')
       }
     })
   }

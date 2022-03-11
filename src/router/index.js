@@ -9,8 +9,15 @@ const Category = () => import('views/category/Category.vue')
 const ShopCar = () => import('views/shopcar/ShopCar.vue')
 const Profile = () => import('views/profile/Profile.vue')
 const Detail = () => import('views/detail/Detail.vue')
+
+const NotFound = () => import('components/common/NotFound.vue')
+
 // 3.创建路由配置对象
 const routes = [
+  {
+    path: '*',
+    component: NotFound
+  },
   {
     path: '',
     redirect: '/home'
@@ -38,7 +45,8 @@ const routes = [
 ]
 // 4.实例化路由对象
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 })
 // 5.默认导出
 export default router

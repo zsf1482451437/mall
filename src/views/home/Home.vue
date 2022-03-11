@@ -168,8 +168,7 @@ export default {
 
 <style scoped>
 #home {
-  height: 100vh;
-  position: relative;
+  height: 100%;
 }
 .home-nav {
   background-color: var(--color-tint);
