@@ -17,7 +17,7 @@ export default {
     topImages: {
       type: Array,
       default () {
-        return {}
+        return []
       }
     }
   }

@@ -21,17 +21,16 @@ export default {
   },
   computed: {
     showImage () {
-      return this.goodsItem.image || this.goodsItem.show.img
+      return this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
     }
   },
-
   methods: {
     imageLoad () {
       this.$bus.$emit('itemImageLoad')
     },
     // 点击详情页
     itemClick () {
-      this.$router.push('/detail/' + this.goodsItem.iid)
+      this.$router.push(`/detail/${this.goodsItem.iid}`)
     }
   }
 }

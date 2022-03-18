@@ -83,22 +83,16 @@ export default {
       currentIndex: 0
     }
   },
+  watch: {
+    // 对路由参数的变化作出响应, 重新发起请求
+    $route (to, from) {
+      if (to.fullPath !== '/home') {
+        this.regetData()
+      }
+    }
+  },
   created () {
-    // 1.保存传入的iid
-    this.iid = this.$route.params.iid
-    // 2.根据iid发送请求
-    this.getDetailData()
-    // 3.请求推荐数据
-    this.getRecommend()
-    // 4.给getTitleTopY赋值(进行防抖)
-    this.getTitleTopY = debounce(() => {
-      this.titleTopY = []
-      this.titleTopY.push(0)
-      this.titleTopY.push(this.$refs.param.$el.offsetTop)
-      this.titleTopY.push(this.$refs.comment.$el.offsetTop)
-      this.titleTopY.push(this.$refs.recommend.$el.offsetTop)
-      this.titleTopY.push(Number.MAX_VALUE)
-    })
+    this.regetData()
   },
   destroyed () {
     // 取消全局事件的监听
@@ -130,6 +124,24 @@ export default {
         this.recommends = res.data.list
       })
     },
+    // 监听动态路由的变化，重新获取数据
+    regetData () {
+      // 1.保存传入的iid
+      this.iid = this.$route.params.iid
+      // 2.根据iid发送请求
+      this.getDetailData()
+      // 3.请求推荐数据
+      this.getRecommend()
+      // 4.给getTitleTopY赋值(进行防抖)
+      this.getTitleTopY = debounce(() => {
+        this.titleTopY = []
+        this.titleTopY.push(0)
+        this.titleTopY.push(this.$refs.param.$el.offsetTop)
+        this.titleTopY.push(this.$refs.comment.$el.offsetTop)
+        this.titleTopY.push(this.$refs.recommend.$el.offsetTop)
+        this.titleTopY.push(Number.MAX_VALUE)
+      })
+    },
     // 非请求
     // 映射vuex里的actions中的方法
     ...mapActions(['addCart']),
@@ -158,7 +170,6 @@ export default {
             this.$refs.nav.currentIndex = this.currentIndex
           }
         }
-        continue
       }
       // 判断backTop是否显示
       this.isShow = (-position.y) > 1000
