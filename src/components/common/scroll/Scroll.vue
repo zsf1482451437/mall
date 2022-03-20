@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    // 回到顶部
+    // 到特定位置
     scrollTo (x, y, time = 500) {
       this.scroll.scrollTo(x, y, time)
     },
@@ -45,6 +45,7 @@ export default {
   mounted () {
     // 新建BScoll对象
     this.scroll = new BScroll(this.$refs.wrapper, {
+      disableTouch: false,
       click: true,
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad

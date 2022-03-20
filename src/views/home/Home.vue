@@ -151,7 +151,7 @@ export default {
       getHomeMultidata().then(res => {
         this.banners = res.data.banner.list
         this.recommends = res.data.recommend.list
-      })
+      }).catch((err) => err)
     },
     getHomeGoods (type) {
       const page = this.goods[type].page + 1
@@ -160,7 +160,7 @@ export default {
         this.goods[type].page += 1
         // 完成上拉加载更多
         this.$refs.scroll.finishedPullUp()
-      })
+      }).catch((err) => err)
     }
   }
 }

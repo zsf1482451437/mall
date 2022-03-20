@@ -6,12 +6,12 @@ export function getDetailData (iid) {
     params: {
       iid
     }
-  })
+  }).catch((err) => err)
 }
 export function getRecommend (params) {
   return request({
     url: '/recommend'
-  })
+  }).catch((err) => err)
 }
 export class Goods {
   constructor (itemInfo, columns, services) {

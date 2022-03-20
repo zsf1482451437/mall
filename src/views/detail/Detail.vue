@@ -85,22 +85,50 @@ export default {
   },
   watch: {
     // 对路由参数的变化作出响应, 重新发起请求
-    $route (to, from) {
-      if (to.fullPath !== '/home') {
-        this.regetData()
-      }
-    }
+    $route: ['createdFn', function () {
+      debounce(() => {
+        this.titleTopY = []
+        this.titleTopY.push(0)
+        this.titleTopY.push(this.$refs.param.$el.offsetTop)
+        this.titleTopY.push(this.$refs.comment.$el.offsetTop)
+        this.titleTopY.push(this.$refs.recommend.$el.offsetTop)
+        this.titleTopY.push(Number.MAX_VALUE)
+      })
+    }]
   },
   created () {
-    this.regetData()
+    this.createdFn()
   },
-  destroyed () {
+  mounted () {
+    this.$bus.$on('itemImgLoad', this.itemImgListener)
+
+    // 4.给getTitleTopY赋值(进行防抖)
+    this.getTitleTopY = debounce(() => {
+      this.titleTopY = []
+      this.titleTopY.push(0)
+      this.titleTopY.push(this.$refs.param.$el.offsetTop)
+      this.titleTopY.push(this.$refs.comment.$el.offsetTop)
+      this.titleTopY.push(this.$refs.recommend.$el.offsetTop)
+      this.titleTopY.push(Number.MAX_VALUE)
+    })
+  },
+  beforeDestroyed () {
     // 取消全局事件的监听
     this.$bus.$off('itemImgLoad', this.itemImgListener)
   },
   methods: {
+    // 生命周期相关
+    createdFn () {
+      // 1.保存传入的iid
+      this.iid = this.$route.params.iid
+      // 2.根据iid发送请求
+      this.getDetailData()
+      // 3.请求推荐数据
+      this.getRecommend()
+    },
     // 请求相关
     getDetailData () {
+      this.iid = this.$route.params.iid
       getDetailData(this.iid).then((res) => {
       // 1.获取顶部轮播图片
         const data = res.result
@@ -117,42 +145,24 @@ export default {
         if (data.rate.cRate !== 0) {
           this.commentInfo = data.rate.list[0]
         }
-      })
+      }).catch((err) => err)
     },
     getRecommend () {
       getRecommend().then((res) => {
         this.recommends = res.data.list
-      })
-    },
-    // 监听动态路由的变化，重新获取数据
-    regetData () {
-      // 1.保存传入的iid
-      this.iid = this.$route.params.iid
-      // 2.根据iid发送请求
-      this.getDetailData()
-      // 3.请求推荐数据
-      this.getRecommend()
-      // 4.给getTitleTopY赋值(进行防抖)
-      this.getTitleTopY = debounce(() => {
-        this.titleTopY = []
-        this.titleTopY.push(0)
-        this.titleTopY.push(this.$refs.param.$el.offsetTop)
-        this.titleTopY.push(this.$refs.comment.$el.offsetTop)
-        this.titleTopY.push(this.$refs.recommend.$el.offsetTop)
-        this.titleTopY.push(Number.MAX_VALUE)
-      })
+      }).catch((err) => err)
     },
     // 非请求
     // 映射vuex里的actions中的方法
     ...mapActions(['addCart']),
     // 监听图片加载完成
     imageLoad () {
-      this.$refs.scroll.refresh()
+      this.itemImgListener()
       this.getTitleTopY()
     },
     // 点击导航栏标题跳转到对应内容
     itemClick (index) {
-      this.$refs.scroll.scrollTo(0, -this.titleTopY[index], 500)
+      this.$refs.scroll.scrollTo(0, -this.titleTopY[index], 1000)
     },
     // 监听滚动位置
     contentScroll (position) {
